@@ -723,6 +723,11 @@ static void udiono_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
     }
     for (i=0;i<n;i++) {
         j=II(obs[i].sat,&rtk->opt);
+
+        char id[16];
+        satno2id(obs[i].sat, id);
+        printf("udiono_ppp: sat=%s, i=%d, rtk->x[%d] = %8.4f\r\n", id, i, j, rtk->x[j]);
+
         if (rtk->x[j]==0.0) {
             freq1=sat2freq(obs[i].sat,obs[i].code[0],nav);
             freq2=sat2freq(obs[i].sat,obs[i].code[1],nav);
@@ -749,6 +754,7 @@ static void udiono_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
             sinel=sin(MAX(rtk->ssat[obs[i].sat-1].azel[1],5.0*D2R));
             rtk->P[j+j*rtk->nx]+=SQR(rtk->opt.prn[1]/sinel)*fabs(rtk->tt);
         }
+        printf("=> rtk->x[%d] = %8.4f\r\n", j, rtk->x[j]);
     }
 }
 /* temporal update of BeiDou-2 isb parameters --------------------------------*/
