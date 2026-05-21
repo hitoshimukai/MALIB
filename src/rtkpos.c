@@ -2162,7 +2162,7 @@ extern int rtkpos(rtk_t *rtk, const obsd_t *obs, int n, nav_t *nav)
     
     trace(3,"rtkpos  : time=%s n=%d\n",time_str(obs[0].time,3),n);
 
-    printf("rtkpos  : time=%s n=%d\n",time_str(obs[0].time,3),n);
+    printf("rtkpos  : time=%s n=%d\r\n",time_str(obs[0].time,3),n);
         
     /* set base station position */
     if (opt->refpos<=POSOPT_RINEX&&opt->mode!=PMODE_SINGLE&&
