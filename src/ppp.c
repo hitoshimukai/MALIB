@@ -1021,7 +1021,10 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
                     continue;
                 }
                 
-                if ((freq=sat2freq(sat,obs[i].code[j/2],nav))==0.0) continue;
+                if ((freq=sat2freq(sat,obs[i].code[j/2],nav))==0.0){
+                    printf("8\n");
+                    continue;
+                }
                 C=SQR(FREQ1/freq)*ionmapf(pos,azel+i*2)*(j%2==0?-1.0:1.0);
             }
             for (k=0;k<nx;k++) H[k+nx*nv]=k<3?-e[k]:0.0;
@@ -1043,7 +1046,10 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
                 }
             }
             if (opt->ionoopt==IONOOPT_EST) {
-                if (rtk->x[II(sat,opt)]==0.0) continue;
+                if (rtk->x[II(sat,opt)]==0.0){
+                    printf("9\n");
+                    continue;
+                }
                 H[II(sat,opt)+nx*nv]=C;
             }
             if (j/2==2&&j%2==1) { /* L5-receiver-dcb */
@@ -1051,7 +1057,10 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
                 H[ID(opt)+nx*nv]=1.0;
             }
             if (j%2==0) { /* phase bias */
-                if ((bias=x[IB(sat,j/2,opt)])==0.0) continue;
+                if ((bias=x[IB(sat,j/2,opt)])==0.0){
+                    printf("10\n");
+                    continue;
+                }
                 H[IB(sat,j/2,opt)+nx*nv]=1.0;
             }
             /* residual */
@@ -1073,13 +1082,17 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
                 trace(2,"outlier (%d) rejected %s sat=%2d %s%d res=%9.4f el=%4.1f\n",
                       post,str,sat,j%2?"P":"L",j/2+1,v[nv],azel[1+i*2]*R2D);
                 exc[i]=1; rtk->ssat[sat-1].rejc[j%2]++;
+                printf("11\n");
                 continue;
             }
             /* record large post-fit residuals */
             if (post&&fabs(v[nv])>sqrt(var[nv])*THRES_REJECT) {
                 obsi[ne]=i; frqi[ne]=j; ve[ne]=v[nv]; ne++;
             }
-            if (j%2==0) rtk->ssat[sat-1].vsat[j/2]=1;
+            if (j%2==0){
+                rtk->ssat[sat-1].vsat[j/2]=1;
+                printf("OK\n");
+            }
             nv++;
         }
     }
