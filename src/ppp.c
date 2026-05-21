@@ -1057,20 +1057,27 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
     for (i=0;i<n&&i<MAXOBS;i++) {
         sat=obs[i].sat;
         
+        char id[16];
+        satno2id(sat, id);
+        printf("sat=%s\t", id);
+
         if ((r=geodist(rs+i*6,rr,e))<=0.0||
             satazel(pos,e,azel+i*2)<opt->elmin||
             testelmask(azel+i*2,opt->elmaskopt)) {
             exc[i]=1;
+            printf("1\r\n");
             continue;
         }
         if (!(sys=satsys(sat,NULL))||!rtk->ssat[sat-1].vs||
             satexclude(obs[i].sat,var_rs[i],svh[i],opt)||exc[i]) {
             exc[i]=1;
+            printf("2\r\n");
             continue;
         }
         /* tropospheric and ionospheric model */
         if (!model_trop(obs[i].time,pos,azel+i*2,opt,x,dtdx,nav,&dtrp,&vart)||
             !model_iono(obs[i].time,pos,azel+i*2,opt,sat,x,nav,&dion,&vari)) {
+            printf("3\r\n");
             continue;
         }
         /* satellite and receiver antenna model */
@@ -1080,6 +1087,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
         /* phase windup model */
         if (!model_phw(rtk->sol.time,sat,nav->pcvs[sat-1].type,
                        opt->posopt[2]?2:0,rs+i*6,rr,sattmode,&rtk->ssat[sat-1].phw)) {
+            printf("4\r\n");
             continue;
         }
         /* corrected phase and code measurements */
@@ -1092,12 +1100,21 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
             isb=bias=0.0;
             
             if (opt->ionoopt==IONOOPT_IFLC) {
-                if ((y=j%2==0?Lc:Pc)==0.0) continue;
+                if ((y=j%2==0?Lc:Pc)==0.0){
+                    printf("6\r\n");
+                    continue;
+                }
             }
             else {
-                if ((y=j%2==0?L[j/2]:P[j/2])==0.0) continue;
+                if ((y=j%2==0?L[j/2]:P[j/2])==0.0){
+                    printf("7\r\n");
+                    continue;
+                }
                 
-                if ((freq=sat2freq(sat,obs[i].code[j/2],nav))==0.0) continue;
+                if ((freq=sat2freq(sat,obs[i].code[j/2],nav))==0.0){
+                    printf("8\r\n");
+                    continue;
+                }
                 C=SQR(FREQ1/freq)*ionmapf(pos,azel+i*2)*(j%2==0?-1.0:1.0);
             }
             for (k=0;k<nx;k++) H[k+nx*nv]=k<3?-e[k]:0.0;
@@ -1113,7 +1130,10 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
                 }
             }
             if (opt->ionoopt==IONOOPT_EST) {
-                if (rtk->x[II(sat,opt)]==0.0) continue;
+                if (rtk->x[II(sat,opt)]==0.0){
+                    printf("9\r\n");
+                    continue;
+                }
                 H[II(sat,opt)+nx*nv]=C;
             }
             if((rtk->opt.navsys&SYS_CMP) && (rtk->opt.bds2bias == 1)){
@@ -1126,7 +1146,10 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
                 }
             }
             if (j%2==0) { /* phase bias */
-                if ((bias=x[IB(sat,j/2,opt)])==0.0) continue;
+                if ((bias=x[IB(sat,j/2,opt)])==0.0){
+                    printf("10\r\n");
+                    continue;
+                }
                 H[IB(sat,j/2,opt)+nx*nv]=1.0;
             }
             /* residual */
@@ -1155,6 +1178,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
                 obsi[ne]=i; frqi[ne]=j; ve[ne]=v[nv]; ne++;
             }
             if (j%2==0) rtk->ssat[sat-1].vsat[j/2]=1;
+            printf("OK\r\n");
             nv++;
         }
     }
@@ -1162,7 +1186,10 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
     if (post&&ne>0) {
         vmax=ve[0]; maxobs=obsi[0]; maxfrq=frqi[0]; rej=0;
         for (j=1;j<ne;j++) {
-            if (fabs(vmax)>=fabs(ve[j])) continue;
+            if (fabs(vmax)>=fabs(ve[j])){
+                printf("11\r\n");
+                continue;
+            }
             vmax=ve[j]; maxobs=obsi[j]; maxfrq=frqi[j]; rej=j;
         }
         sat=obs[maxobs].sat;
