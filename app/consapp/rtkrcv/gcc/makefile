@@ -13,7 +13,8 @@ LIBS  =
 #LIBS  += -L$(MKLDIR) -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread -lpthread -lgomp
 
 CFLAGS = -Wall -O3 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) -I.. $(OPTS) -g
-LDLIBS  = $(LIBS) -lm -lrt -lpthread
+# LDLIBS  = $(LIBS) -lm -lrt -lpthread
+LDLIBS  = $(LIBS) -lm -lpthread
 
 all        : rtkrcv
 rtkrcv     : rtkrcv.o vt.o rtkcmn.o rtksvr.o rtkpos.o geoid.o solution.o lambda.o

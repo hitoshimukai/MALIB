@@ -1,0 +1,1 @@
+./rtkrcv -o rtkrcv.conf -s
