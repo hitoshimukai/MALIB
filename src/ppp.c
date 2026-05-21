@@ -967,20 +967,27 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
     for (i=0;i<n&&i<MAXOBS;i++) {
         sat=obs[i].sat;
         
+        char id[16];
+        satid2str(sat,id);
+        printf("ppp_res: sat=%s\t",id);
+
         if ((r=geodist(rs+i*6,rr,e))<=0.0||
             satazel(pos,e,azel+i*2)<opt->elmin||
             testelmask(azel+i*2,opt->elmaskopt)) {
             exc[i]=1;
+            printf("1\n");
             continue;
         }
         if (!(sys=satsys(sat,NULL))||!rtk->ssat[sat-1].vs||
             satexclude(obs[i].sat,var_rs[i],svh[i],opt)||exc[i]) {
             exc[i]=1;
+            printf("2\n");
             continue;
         }
         /* tropospheric and ionospheric model */
         if (!model_trop(obs[i].time,pos,azel+i*2,opt,x,dtdx,nav,&dtrp,&vart)||
             !model_iono(obs[i].time,pos,azel+i*2,opt,sat,x,nav,&dion,&vari)) {
+            printf("3\n");
             continue;
         }
         /* satellite and receiver antenna model */
@@ -990,6 +997,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
         /* phase windup model */
         if (!model_phw(rtk->sol.time,sat,nav->pcvs[sat-1].type,
                        opt->posopt[2]?2:0,rs+i*6,rr,&rtk->ssat[sat-1].phw)) {
+            printf("4\n");
             continue;
         }
         /* corrected phase and code measurements */
@@ -1002,10 +1010,16 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
             dcb=bias=0.0;
             
             if (opt->ionoopt==IONOOPT_IFLC) {
-                if ((y=j%2==0?Lc:Pc)==0.0) continue;
+                if ((y=j%2==0?Lc:Pc)==0.0){
+                    printf("6\n");
+                    continue;
+                }
             }
             else {
-                if ((y=j%2==0?L[j/2]:P[j/2])==0.0) continue;
+                if ((y=j%2==0?L[j/2]:P[j/2])==0.0){
+                    printf("7\n");
+                    continue;
+                }
                 
                 if ((freq=sat2freq(sat,obs[i].code[j/2],nav))==0.0) continue;
                 C=SQR(FREQ1/freq)*ionmapf(pos,azel+i*2)*(j%2==0?-1.0:1.0);
