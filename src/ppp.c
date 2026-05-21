@@ -968,7 +968,7 @@ static int ppp_res(int post, const obsd_t *obs, int n, const double *rs,
         sat=obs[i].sat;
         
         char id[16];
-        satid2str(sat,id);
+        satno2id(sat,id);
         printf("ppp_res: sat=%s\t",id);
 
         if ((r=geodist(rs+i*6,rr,e))<=0.0||
