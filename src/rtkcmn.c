@@ -2954,16 +2954,23 @@ extern void signal_replace(obsd_t *obs, int idx, char f, char *c)
 
     char id[16];
     satno2id(obs->sat,id);
-    printf("obs->sat=%s, obs->code[%d]=%d\r\n",id,idx, obs->code[idx]);
+    printf("obs->sat=%s, idx=%d, f=%c, c=%s, obs->code[%d]=%d\r\n",id, idx, f, c, idx, obs->code[idx]);
 
     for(i=0;i<NFREQ+NEXOBS;i++){
         code=code2obs(obs->code[i]);
-        for(j=0;c[j]!='\0';j++) if(code[0]==f && code[1]==c[j])break;
+        printf("i=%d, code=%s\r\n", i, code);
+        for(j=0;c[j]!='\0';j++){
+            printf("j=%d, code[0]=%c, code[1]=%c, c[%d]=%c\r\n", j, code[0], code[1], j, c[j]);
+            if(code[0]==f && code[1]==c[j]) {
+                break;
+            }
+        }
         if(c[j]!='\0')break;
     }
     if(i<NFREQ+NEXOBS) {
         obs->SNR[idx]=obs->SNR[i];obs->LLI[idx]=obs->LLI[i];obs->code[idx]=obs->code[i];
         obs->L[idx]  =obs->L[i];  obs->P[idx]  =obs->P[i];  obs->D[idx]   =obs->D[i];
+        printf("i=%d, obs->code[%d]=%d, obs->code[%d]=%d\r\n", i, i, obs->code[i], idx, obs->code[idx]);
     }
     else {
         obs->SNR[idx]=obs->LLI[idx]=obs->code[idx]=0;
