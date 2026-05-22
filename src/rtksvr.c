@@ -677,7 +677,7 @@ static void *rtksvrthread(void *arg)
             for(j = 0; j < obs.n; j++){
                 char id[16];
                 satno2id(obs.data[j].sat, id);
-                printf("obs: time=%s sat=%s code=%d,%d,%d\n", time_str(obs.data[j].time, 3), id, obs.data[j].code[0], obs.data[j].code[1], obs.data[j].code[2]);
+                printf("obs: time=%s sat=%s code=%d,%d,%d\r\n", time_str(obs.data[j].time, 3), id, obs.data[j].code[0], obs.data[j].code[1], obs.data[j].code[2]);
             }
             /* rtk positioning */
             rtksvrlock(svr);
