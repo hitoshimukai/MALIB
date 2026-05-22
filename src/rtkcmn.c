@@ -2956,6 +2956,7 @@ extern void signal_replace(obsd_t *obs, int idx, char f, char *c)
     satno2id(obs->sat,id);
     printf("obs->sat=%s, idx=%d, f=%c, c=%s, obs->code[%d]=%d\r\n",id, idx, f, c, idx, obs->code[idx]);
 
+    printf("NFREQ=%d, NEXOBS=%d\r\n", NFREQ, NEXOBS);
     for(i=0;i<NFREQ+NEXOBS;i++){
         code=code2obs(obs->code[i]);
         printf("i=%d(/%d), code=%s\r\n", i, NFREQ+NEXOBS, code);
