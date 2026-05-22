@@ -2958,10 +2958,11 @@ extern void signal_replace(obsd_t *obs, int idx, char f, char *c)
 
     for(i=0;i<NFREQ+NEXOBS;i++){
         code=code2obs(obs->code[i]);
-        printf("i=%d, code=%s\r\n", i, code);
+        printf("i=%d(/%d), code=%s\r\n", i, NFREQ+NEXOBS, code);
         for(j=0;c[j]!='\0';j++){
             printf("j=%d, code[0]=%c, code[1]=%c, c[%d]=%c\r\n", j, code[0], code[1], j, c[j]);
             if(code[0]==f && code[1]==c[j]) {
+                printf("match found at i=%d\r\n", i);
                 break;
             }
         }
