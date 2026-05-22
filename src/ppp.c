@@ -732,6 +732,8 @@ static void udiono_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
             freq1=sat2freq(obs[i].sat,obs[i].code[0],nav);
             freq2=sat2freq(obs[i].sat,obs[i].code[1],nav);
             printf("udiono_ppp: freq1=%8.4f, freq2=%8.4f\r\n", freq1, freq2);
+            printf("obs[%d].sat=%d, obs[%d].code[0]=%d\r\n", i, obs[i].sat, i, obs[i].code[0]);
+            printf("obs[%d].sat=%d, obs[%d].code[1]=%d\r\n", i, obs[i].sat, i, obs[i].code[1]);
         }
 
         if (rtk->x[j]==0.0) {
