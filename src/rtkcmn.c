@@ -2952,6 +2952,10 @@ extern void signal_replace(obsd_t *obs, int idx, char f, char *c)
     int i,j;
     char *code;
 
+    char id[16];
+    satno2id(obs->sat,id);
+    printf("obs->sat=%s, obs->code[%d]=%d\r\n",id,idx, obs->code[idx]);
+
     for(i=0;i<NFREQ+NEXOBS;i++){
         code=code2obs(obs->code[i]);
         for(j=0;c[j]!='\0';j++) if(code[0]==f && code[1]==c[j])break;
@@ -2965,6 +2969,7 @@ extern void signal_replace(obsd_t *obs, int idx, char f, char *c)
         obs->SNR[idx]=obs->LLI[idx]=obs->code[idx]=0;
         obs->P[idx]  =obs->L[idx]  =obs->D[idx]   =0.0;
     }
+    printf("===> obs->sat=%s, obs->code[%d]=%d\r\n",id,idx, obs->code[idx]);
 }
 
 /* screen by time --------------------------------------------------------------
